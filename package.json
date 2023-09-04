@@ -1,0 +1,29 @@
+{
+  "name": "foodie-planner-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "build": "rm -rf build && tsc",
+    "start": "NODE_ENV=DEVELOPMENT node build/src/server.js",
+    "dev": "tsnd --transpile-only --respawn --exit-child src/server.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/autoload": "^5.7.1",
+    "@fastify/cors": "^8.3.0",
+    "@prisma/client": "^5.2.0",
+    "@types/node": "^20.5.7",
+    "axios": "^1.5.0",
+    "dotenv": "^16.3.1",
+    "fastify": "^4.22.0",
+    "google-auth-library": "^9.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^3.1.2",
+    "qs": "^6.11.2",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0"
+  }
+}
