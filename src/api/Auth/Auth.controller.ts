@@ -3,8 +3,6 @@ import { Auth } from "./Auth.interface";
 import { createUser, fetchUser, getUserDetails } from "./Auth.dao";
 import jwt from "jsonwebtoken";
 import { getGoogleAuthTokens, getGoogleUrl, verifyToken} from "../../utils/helper";
-
-
 export async function authHandler(req: FastifyRequest, res: FastifyReply) {
   try {
     const { emailId, password } = req.body as Auth;
@@ -20,7 +18,9 @@ export async function authHandler(req: FastifyRequest, res: FastifyReply) {
       };
       const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
         expiresIn: "30d",
-      }); // generates token using google email
+      });
+      // generates token using google email
+      
       console.log(token);
       res.status(200).send({ message: "user created", token });
     }
