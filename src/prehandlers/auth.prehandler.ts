@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { verify } from "jsonwebtoken";
 
-export const jwtVerification = async (
+export const jwtVerification = (
   request: FastifyRequest,
   reply: FastifyReply,
   done: (err?: Error) => void
@@ -11,10 +11,15 @@ export const jwtVerification = async (
     const decodedToken = verify(token, process.env.JWT_SECRET_KEY); // Replace with your own secret key
     if (!decodedToken) {
       reply.code(401).send({ error: "Invalid token" });
-      return;
+      console.log("1222");
+      return done(new Error("unauthorised"));
     }
     request.user = decodedToken;
+    console.log("doneee");
+    done();
+    return;
   } catch (err) {
+    console.log(err);
     reply.code(401).send({ error: "No Token available or Token Expired" });
   }
 };

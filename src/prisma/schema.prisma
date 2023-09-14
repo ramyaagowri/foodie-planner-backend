@@ -16,7 +16,7 @@ model User {
   emailId        String   @unique
   password       String?
   profilePic     String?
-  description    String?
+  description    String? @db.VarChar(3000)
   postedRecipies Recipe[]
   savedRecipe    Recipe[] @relation("UserToSavedRecipe")
   savedRecipes   SavedRecipe[]
@@ -26,15 +26,18 @@ model User {
 model Recipe {
   id          Int    @id @default(autoincrement())
   recipeName  String
-  description String
-  ingredients String
-  procedure   String
-  image       String
+  description String @db.VarChar(6000)
+  procedure   String @db.VarChar(6000)
+  image       String?
+  level       String
+  timeToMake  Int //In minutes from user
   rating      Int @default(0)
   user        User   @relation(fields: [userId], references: [id])
   userId      Int
   savedBy     User[] @relation("UserToSavedRecipe")
   savedRecipes SavedRecipe[]
+  ingredient Ingredients[]
+  
 }
 model SavedRecipe {
   id        Int      @id @default(autoincrement())
@@ -51,4 +54,12 @@ model MealPlans{
     userId    Int
     day       String
     mealPlan  String
+}
+
+model Ingredients{
+    id        Int      @id @default(autoincrement())
+    ingredientName String
+    ingredientQuantity String
+    recipe Recipe @relation(fields: [recipeId] ,references: [id])
+    recipeId Int
 }
