@@ -58,7 +58,13 @@ const recipeRoutes: IRouteOptions<{
     handler: recipeController.getIngredients,
     preHandler: [],
     method: API_METHODS.GET,
-  }
+  },
+  {
+    url: "/delete/:recipeId",
+    handler: recipeController.deleteRecipe,
+    preHandler: [],
+    method: API_METHODS.DELETE,
+  },
 ];
 
 export default recipeRoutes;

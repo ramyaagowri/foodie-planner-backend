@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import {
   createRecipe,
+  deletePostedRecipe,
   getRecipeForHome,
   getRecipeIngredients,
   getUniqueRecipe,
@@ -108,14 +109,23 @@ class RecipeController {
   public async getIngredients(req: FastifyRequest, res: FastifyReply) {
     try {
       const { recipeId } = req.params;
-      console.log(recipeId);
-     const result = await getRecipeIngredients(Number(recipeId));
+      const result = await getRecipeIngredients(Number(recipeId));
       res.status(200).send(result);
     } catch (e) {
       res.status(403).send(e);
     }
   }
-  
+
+  public async deleteRecipe(req: FastifyRequest, res: FastifyReply) {
+    try {
+      const { recipeId } = req.params;
+      console.log(recipeId);
+      const result = await deletePostedRecipe(Number(recipeId));
+      res.status(200).send({ deleted: true });
+    } catch (e) {
+      res.status(403).send(e);
+    }
+  }
 }
 
 export default RecipeController;

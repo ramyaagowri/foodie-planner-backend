@@ -162,3 +162,28 @@ export async function getRecipeIngredients(id: Number) {
     return false;
   }
 }
+
+export async function deletePostedRecipe(id: Number) {
+  try {
+    const deleteIngredients = await prisma.ingredients.deleteMany({
+      where: {
+        recipeId: id,
+      },
+    });
+    const deleteSavedRecipe = await prisma.savedRecipe.deleteMany({
+      where: {
+        recipeId: id,
+      },
+    });
+    const result = await prisma.recipe.delete({
+      where: {
+        id,
+      },
+    });
+
+    return result;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
