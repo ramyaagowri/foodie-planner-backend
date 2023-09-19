@@ -65,6 +65,12 @@ const recipeRoutes: IRouteOptions<{
     preHandler: [],
     method: API_METHODS.DELETE,
   },
+  // {
+  //   url: "/isSaved",
+  //   handler: recipeController.isSaved,
+  //   preHandler: [],
+  //   method: API_METHODS.DELETE,
+  // },
 ];
 
 export default recipeRoutes;

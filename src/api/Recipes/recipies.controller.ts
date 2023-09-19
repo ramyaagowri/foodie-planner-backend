@@ -126,6 +126,13 @@ class RecipeController {
       res.status(403).send(e);
     }
   }
+
+  // public async isSaved(req:FastifyRequest:res:FastifyReply)
+  // {
+  //   try{
+
+  //   }
+  // }
 }
 
 export default RecipeController;
