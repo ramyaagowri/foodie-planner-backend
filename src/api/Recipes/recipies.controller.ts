@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import {
+  addRating,
   createRecipe,
   deletePostedRecipe,
   getRecipeForHome,
@@ -8,10 +9,15 @@ import {
   getUserId,
   insertImageUrl,
   randomRecipe,
+  removeFromSaved,
   saveUserRecipe,
   userRecipes,
 } from "./recipies.dao";
-import { uploadImage } from "../../utils/helper";
+import {
+  extractYouTubeVideoId,
+  fetchId,
+  uploadImage,
+} from "../../utils/helper";
 class RecipeController {
   public generateRecipe = async (req: FastifyRequest, res: FastifyReply) => {
     try {
@@ -19,23 +25,40 @@ class RecipeController {
       const ingredient = req.body.ingredients; // Array
       console.log("called the controller===================================");
       const { emailId } = req.user;
-      // console.log("Email Id.....", emailId);
       const id = await getUserId(emailId);
-      // console.log(dataState.timeToMake);
-      const result = await createRecipe(
-        dataState.recipeName,
-        dataState.description,
-        dataState.procedure,
-        dataState.level,
-        Number(dataState.timeToMake),
-        id,
-        ingredient
-      );
-      console.log(
-        "Result-----------------------------------------------",
-        result
-      );
-      res.status(200).send(result);
+      let link, result;
+
+      if (dataState.link) {
+        link = await fetchId(dataState.link);
+        console.log("Linkkkkkkkkkkkk", link);
+        if (link) {
+          result = await createRecipe(
+            dataState.link,
+            dataState.recipeName,
+            dataState.description,
+            dataState.procedure,
+            dataState.level,
+            Number(dataState.timeToMake),
+            id,
+            ingredient
+          );
+        } else {
+          res.status(400).send("Link Invalid");
+        }
+      } else {
+        result = await createRecipe(
+          dataState.link,
+          dataState.recipeName,
+          dataState.description,
+          dataState.procedure,
+          dataState.level,
+          Number(dataState.timeToMake),
+          id,
+          ingredient
+        );
+        res.status(200).send(result);
+      }
+
       console.log("hello");
     } catch (e) {
       res.status(403).send(e);
@@ -127,12 +150,32 @@ class RecipeController {
     }
   }
 
-  // public async isSaved(req:FastifyRequest:res:FastifyReply)
-  // {
-  //   try{
-
-  //   }
-  // }
+  public async rate(req: FastifyRequest, res: FastifyReply) {
+    try {
+      const { userRating, recipeId } = req.body;
+      const result = addRating(Number(userRating), Number(recipeId));
+      if (result) {
+        res.status(200).send("Rated");
+      }
+    } catch (e) {
+      res.status(500).send(e);
+    }
+  }
+  public async unSave(req: FastifyRequest, res: FastifyReply) {
+    try {
+      const { recipeId } = req.params;
+      const { emailId } = req.user;
+      const id = await getUserId(emailId);
+      console.log(recipeId, id);
+      const result = await removeFromSaved(Number(id), Number(recipeId));
+      if (result) {
+        console.log(result);
+        res.status(200).send("Unsaved");
+      }
+    } catch (e) {
+      res.status(500).send(e);
+    }
+  }
 }
 
 export default RecipeController;

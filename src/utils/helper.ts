@@ -79,7 +79,7 @@ export async function uploadImage(id) {
         public_id: `${id}`,
         crop: "fill",
       });
-      await deleteFilesInFolder(folderPath)
+      await deleteFilesInFolder(folderPath);
       return resultant;
     }
   } catch (err) {
@@ -87,8 +87,7 @@ export async function uploadImage(id) {
   }
 }
 
-
-function deleteFilesInFolder(folderPath :String) {
+function deleteFilesInFolder(folderPath: String) {
   fs.readdir(folderPath, (err, files) => {
     if (err) {
       console.error(`Error reading directory: ${err}`);
@@ -117,4 +116,47 @@ function deleteFilesInFolder(folderPath :String) {
     });
   });
 }
+export async function extractYouTubeVideoId(url: String) {
+  try {
+    const youtubeRegex =
+      /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\r\n]{11})/i;
 
+    const match = url.match(youtubeRegex);
+    console.log(match);
+    if (match && match[1]) {
+      return match[1];
+    } else {
+      return false;
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function fetchId(link: string) {
+  const apiKey = "AIzaSyByUAMuknVTf2op4SKY36CHnnqdfTLSbo4";
+  const videoId = await extractYouTubeVideoId(link);
+  console.log(videoId);
+  if (videoId) {
+    return new Promise<boolean>((resolve, reject) => {
+      axios
+        .get(
+          `https://www.googleapis.com/youtube/v3/videos?key=${apiKey}&id=${videoId}`
+        )
+        .then((response) => {
+          if (response.data.items.length > 0) {
+            console.log("hiiiiii", response.data.items);
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        })
+        .catch((error) => {
+          console.error("Error validating YouTube link:", error.response.data);
+          reject(error);
+        });
+    });
+  } else {
+    return false;
+  }
+}

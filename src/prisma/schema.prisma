@@ -37,6 +37,7 @@ model Recipe {
   savedBy     User[] @relation("UserToSavedRecipe")
   savedRecipes SavedRecipe[]
   ingredient Ingredients[]
+  videoLink  String? @default("")
   
 }
 model SavedRecipe {

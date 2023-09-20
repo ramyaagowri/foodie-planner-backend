@@ -18,6 +18,7 @@ export async function getRecipeForHome() {
   }
 }
 export async function createRecipe(
+  videoLink: String,
   recipeName: String,
   description: String,
   procedure: String,
@@ -29,6 +30,7 @@ export async function createRecipe(
   try {
     const recipe = await prisma.recipe.create({
       data: {
+        videoLink,
         recipeName,
         description,
         procedure,
@@ -181,6 +183,47 @@ export async function deletePostedRecipe(id: Number) {
       },
     });
 
+    return result;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+
+export async function addRating(userRating: Number, recipeId: Number) {
+  try {
+    const prevRating = await prisma.recipe.findUnique({
+      where: {
+        id: recipeId,
+      },
+    });
+    console.log("User Rating ", userRating);
+    const avgRating = (prevRating?.rating + userRating) / 2;
+    const result = await prisma.recipe.update({
+      where: {
+        id: recipeId,
+      },
+      data: {
+        rating: avgRating,
+      },
+    });
+    return result;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+export async function removeFromSaved(id: Number, recipeId: Number) {
+  try {
+    const result = await prisma.savedRecipe.delete({
+      where: {
+        userId_recipeId: {
+          userId: id,
+          recipeId,
+        },
+      },
+    });
+    console.log("From the removed wishList", result);
     return result;
   } catch (e) {
     console.log(e);

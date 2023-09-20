@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Recipe` ADD COLUMN `videoLink` VARCHAR(191) NOT NULL DEFAULT '';
