@@ -126,6 +126,9 @@ export async function getUniqueRecipe(id: Number) {
       where: {
         id,
       },
+      include: {
+        user: true,
+      },
     });
 
     return randomRecipes;

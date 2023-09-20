@@ -42,6 +42,7 @@ class RecipeController {
             id,
             ingredient
           );
+          res.status(200).send(result);
         } else {
           res.status(400).send("Link Invalid");
         }
