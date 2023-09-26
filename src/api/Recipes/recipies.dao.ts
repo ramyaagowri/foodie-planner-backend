@@ -17,6 +17,7 @@ export async function getRecipeForHome() {
     return false;
   }
 }
+
 export async function createRecipe(
   videoLink: String,
   recipeName: String,
@@ -227,6 +228,37 @@ export async function removeFromSaved(id: Number, recipeId: Number) {
       },
     });
     console.log("From the removed wishList", result);
+    return result;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+
+export async function getFollowingfeed(id: Number) {
+  try {
+    const followingIds = await prisma.followers.findMany({
+      where: {
+        followerId: id,
+      },
+      select: {
+        followingId: true,
+      },
+    });
+    console.log("Following Id ", followingIds);
+    const result = await prisma.recipe.findMany({
+      where: {
+        userId: {
+          in: followingIds.map((entry) => entry.followingId),
+        },
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    console.log(result);
+
     return result;
   } catch (e) {
     console.log(e);

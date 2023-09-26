@@ -24,7 +24,7 @@ const recipeRoutes: IRouteOptions<{
     method: API_METHODS.POST,
   },
   {
-    url: "/getSavedRecipe",
+    url: "/getSavedRecipe/:id",
     handler: recipeController.getUserRecipe,
     preHandler: [jwtVerification],
     method: API_METHODS.GET,
@@ -74,6 +74,12 @@ const recipeRoutes: IRouteOptions<{
   {
     url: "/unSave/:recipeId",
     handler: recipeController.unSave,
+    preHandler: [jwtVerification],
+    method: API_METHODS.GET,
+  },
+  {
+    url: "/followingfeed",
+    handler: recipeController.followingfeed,
     preHandler: [jwtVerification],
     method: API_METHODS.GET,
   },

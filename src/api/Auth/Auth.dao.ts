@@ -24,11 +24,11 @@ export async function fetchUser(emailId: string) {
     return false;
   }
 }
-export async function getUserDetails(emailId: string) {
+export async function getUserDetails(id: Number) {
   try {
     const result = await prisma.user.findFirst({
       where: {
-        emailId,
+        id,
       },
     });
     console.log(result);
@@ -79,6 +79,55 @@ export async function updateProfilePhoto(id: Number, link: String) {
     return result;
   } catch (err) {
     console.log(err);
+    return false;
+  }
+}
+export async function followUser(followerId: Number, followingId: Number) {
+  try {
+    const result = await prisma.followers.create({
+      data: {
+        followerId,
+        followingId,
+      },
+    });
+    console.log(result);
+    // return result;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+
+export async function unfollowUser(followerId: Number, followingId: Number) {
+  try {
+    const result = await prisma.followers.deleteMany({
+      where: {
+        followerId,
+        followingId,
+      },
+    });
+    console.log(result);
+    // return result;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+
+export async function followingDetails(
+  followerId: Number,
+) {
+  try {
+    const result = await prisma.followers.findMany({
+      where: {
+        followerId,
+      },
+    });
+    console.log(result);
+    return result;
+    // return result;
+  } catch (e) {
+    console.log(e);
     return false;
   }
 }

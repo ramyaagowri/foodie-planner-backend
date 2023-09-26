@@ -16,7 +16,7 @@ export const jwtVerification = (
         return done(new Error("unauthorised"));
       }
       request.user = decodedToken;
-      console.log("doneee");
+      console.log("doneee",request.params.id);
       done();
       return;
     }

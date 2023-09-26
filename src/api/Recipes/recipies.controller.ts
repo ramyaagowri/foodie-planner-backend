@@ -3,6 +3,8 @@ import {
   addRating,
   createRecipe,
   deletePostedRecipe,
+  followUser,
+  getFollowingfeed,
   getRecipeForHome,
   getRecipeIngredients,
   getUniqueRecipe,
@@ -80,11 +82,18 @@ class RecipeController {
 
   public async getUserRecipe(req: FastifyRequest, res: FastifyReply) {
     try {
-      const { emailId } = req.user;
-      // const {recipeId}= req.body as {recipeId :Number};
-      const id = await getUserId(emailId);
-      const result = await userRecipes(id);
-      res.status(200).send(result);
+      const { id } = req.params;
+
+      if (id) {
+        const result = await userRecipes(Number(id));
+        res.status(200).send(result);
+      } else {
+        const { emailId } = req.user;
+        // const { recipeId } = req.body as { recipeId: Number };
+        const id = await getUserId(emailId);
+        const result = await userRecipes(Number(id));
+        res.status(200).send(result);
+      }
     } catch (e) {
       res.status(403).send(e);
     }
@@ -172,6 +181,20 @@ class RecipeController {
       if (result) {
         console.log(result);
         res.status(200).send("Unsaved");
+      }
+    } catch (e) {
+      res.status(500).send(e);
+    }
+  }
+  public async followingfeed(req: FastifyRequest, res: FastifyReply) {
+    try {
+      const { emailId } = req.user;
+      const id = await getUserId(emailId);
+      console.log(id);
+      const result = await getFollowingfeed(Number(id));
+      if (result) {
+        console.log(result);
+        res.status(200).send(result);
       }
     } catch (e) {
       res.status(500).send(e);

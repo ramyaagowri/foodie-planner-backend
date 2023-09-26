@@ -1,6 +1,15 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { Auth } from "./Auth.interface";
-import { createUser, editProfile, fetchUser, getUserDetails, updateProfilePhoto } from "./Auth.dao";
+import {
+  createUser,
+  editProfile,
+  fetchUser,
+  followUser,
+  followingDetails,
+  getUserDetails,
+  unfollowUser,
+  updateProfilePhoto,
+} from "./Auth.dao";
 import jwt from "jsonwebtoken";
 import {
   getGoogleAuthTokens,
@@ -9,6 +18,7 @@ import {
   verifyToken,
 } from "../../utils/helper";
 import { getRecipe, getUserId } from "../Recipes/recipies.dao";
+import { number } from "joi";
 export async function authHandler(req: FastifyRequest, res: FastifyReply) {
   try {
     const { emailId, password } = req.body as Auth;
@@ -82,11 +92,23 @@ export async function googleOauth(req: FastifyRequest, res: FastifyReply) {
 
 export async function getProfile(req: FastifyRequest, res: FastifyReply) {
   try {
+    const { id } = req.params;
     const { emailId } = req.user;
-    console.log(emailId + "  Email Id");
-    const User = await getUserDetails(emailId);
-    console.log(User);
-    if (User) res.status(200).send(User);
+    const userid = await getUserId(emailId);
+
+    if (Number(id)) {
+      const User = await getUserDetails(Number(id));
+      console.log(User);
+      if (User)
+        res.status(200).send({
+          data: User,
+        });
+    } else {
+      console.log(userid);
+      const User = await getUserDetails(Number(userid));
+      console.log(User);
+      if (User) res.status(200).send(User);
+    }
   } catch (e) {
     res.status(403).send(e);
   }
@@ -123,9 +145,45 @@ export async function updateProfilePic(req: FastifyRequest, res: FastifyReply) {
     const { emailId } = req.user;
     const id = await getUserId(emailId);
     const resultant = await uploadImage(id);
-    const result = await updateProfilePhoto(id,resultant?.url);
+    const result = await updateProfilePhoto(id, resultant?.url);
     res.status(200).send(result);
   } catch (err) {
     res.status(403).send(err);
+  }
+}
+
+export async function follow(req: FastifyRequest, res: FastifyReply) {
+  try {
+    const { id } = req.params;
+    const { emailId } = req.user;
+    const followerId = await getUserId(emailId);
+    const result = await followUser(Number(followerId), Number(id));
+    res.status(200).send("Followed");
+  } catch (e) {
+    res.status(500).send(e);
+  }
+}
+
+export async function unfollow(req: FastifyRequest, res: FastifyReply) {
+  try {
+    const { id } = req.params;
+    const { emailId } = req.user;
+    const followerId = await getUserId(emailId);
+    const result = await unfollowUser(Number(followerId), Number(id));
+    res.status(200).send("unFollowed");
+  } catch (e) {
+    res.status(500).send(e);
+  }
+}
+
+export async function getFollowing(req: FastifyRequest, res: FastifyReply) {
+  try {
+    const { id } = req.params;
+    const { emailId } = req.user;
+    const followerId = await getUserId(emailId);
+    const result = await followingDetails(Number(followerId));
+    res.status(200).send(result);
+  } catch (e) {
+    res.status(500).send(e);
   }
 }

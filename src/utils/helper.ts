@@ -4,6 +4,7 @@ import fs from "fs";
 import { OAuth2Client } from "google-auth-library";
 import path from "path";
 import cloudinary from "../services/cloudinary";
+console.log(process.env.GOOGLE_AUTH_CLIENT_ID);
 const client = new OAuth2Client({
   clientId: process.env.GOOGLE_AUTH_CLIENT_ID,
 });

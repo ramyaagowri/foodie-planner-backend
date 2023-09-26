@@ -64,3 +64,9 @@ model Ingredients{
     recipe Recipe @relation(fields: [recipeId] ,references: [id])
     recipeId Int
 }
+
+model Followers{
+  id Int @id @default(autoincrement())
+  followerId Int  //who follows the user
+  followingId Int //the user who is followed
+}
